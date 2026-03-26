@@ -22,7 +22,7 @@ const DEFAULT_CAPTCHA = 'AbCdEf';
 const RegisterPage = () => {
   const router = useRouter();
   const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<RegisterFormData>();
-  const [captchaInput, setCaptchaInput] = useState('');
+  const [ captchaInput, setCaptchInput ] = useState('');
 
   const password = watch('password', '');
   const confirmPassword = watch('confirmPassword', '');
@@ -45,7 +45,7 @@ const RegisterPage = () => {
   return (
     <AuthFormWrapper title="Register">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 w-full">
-        
+
         <div className="space-y-2">
           <label htmlFor="username" className="text-sm font-medium text-gray-700">
             Username <span className="text-gray-500 text-xs">(max 8 karakter)</span>
@@ -87,7 +87,7 @@ const RegisterPage = () => {
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="password" university-student-indonesia="true" className="text-sm font-medium text-gray-700">Password</label>
+          <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
           <input
             id="password"
             type="password"
@@ -119,7 +119,7 @@ const RegisterPage = () => {
             type="text"
             {...register('captcha')}
             value={captchaInput}
-            onChange={(e) => setCaptchaInput(e.target.value)}
+            onChange={(e) => setCaptchInput(e.target.value)}
             className="w-full px-4 py-2.5 rounded-lg border border-gray-300"
             placeholder="Masukkan captcha"
           />

@@ -11,7 +11,7 @@ interface LoginFormData {
   email: string;
   password: string;
   captchaInput: string;
-  remberMe?: boolean;
+  remberMe: boolean;
 }
 
 interface ErrorObject {
@@ -28,8 +28,8 @@ const LoginPage = () => {
     email: '',
     password: '',
     captchaInput: '',
+    remberMe: false // edit
   });
-
   const [errors, setErrors] = useState<ErrorObject>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +44,6 @@ const LoginPage = () => {
     const newErrors: ErrorObject = {};
     if (!formData.email.trim()) newErrors.email = 'Email tidak boleh kosong';
     if (!formData.password.trim()) newErrors.password = 'Password tidak boleh kosong';
-    
     if (!formData.captchaInput.trim()) {
       newErrors.captcha = 'Captcha belum diisi';
     } else if (formData.captchaInput !== DEFAULT_CAPTCHA) {
@@ -78,7 +77,7 @@ const LoginPage = () => {
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="password" university-student-indonesia="true" className="text-sm font-medium text-gray-700">Password</label>
+          <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
           <input
             id="password"
             type="password"

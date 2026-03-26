@@ -1,136 +1,117 @@
-'use client'
-
+"use client";
 import { useState, useEffect } from "react";
-// Import Controller dihapus karena tidak digunakan di sini
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Game1() {
-    const holes = Array.from({ length: 9 });
+  const holes = Array.from({ length: 9 });
 
-    // Perbaikan typo: dari modeIndex menjadi moleIndex agar konsisten
-    const [moleIndex, setMoleIndex] = useState<number | null>(null);
-    const [score, setScore] = useState<number>(0);
-    const [time, setTime] = useState<number>(30);
-    const [gameActive, setGameActive] = useState<boolean>(false);
-    const [highScore, setHighScore] = useState<number>(0);
+  const [moleIndex, setMoleIndex] = useState<number | null>(null);
+  const [score, setScore] = useState<number>(0);
+  const [time, setTime] = useState<number>(30);
+  const [gameActive, setGameActive] = useState<boolean>(false);
+  const [highScore, setHighScore] = useState<number>(0);
 
-    useEffect(() => {
-        const saveHighScore = localStorage.getItem("whack_highscore");
-        if (saveHighScore) {
-            setHighScore(Number(saveHighScore));
-        }
-    }, []);
+  useEffect(() => {
+    const savedHighScore = localStorage.getItem("whack_highscore");
+    if (savedHighScore) {
+      setHighScore(Number(savedHighScore));
+    }
+  }, []);
 
-    useEffect(() => {
-        if (!gameActive) return;
+  useEffect(() => {
+    if (!gameActive) return;
 
-        const moleTimer = setInterval(() => {
-            const randomIndex = Math.floor(Math.random() * holes.length);
-            setMoleIndex(randomIndex);
-        }, 700);
+    const moleTimer = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * holes.length);
+      setMoleIndex(randomIndex);
+    }, 700);
 
-        return () => clearInterval(moleTimer);
-    }, [gameActive, holes.length]); // Ditambahkan holes.length ke dependency
+    return () => clearInterval(moleTimer);
+  }, [gameActive]);
 
-    useEffect(() => {
-        if (!gameActive) return;
+  useEffect(() => {
+    if (!gameActive) return;
 
-        const countdown = setInterval(() => {
-            setTime((prev) => {
-                if (prev <= 1) {
-                    clearInterval(countdown);
-                    setGameActive(false);
-                    setMoleIndex(null); // Sembunyikan tikus saat waktu habis
+    const countdown = setInterval(() => {
+      setTime((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdown);
+          setGameActive(false);
 
-                    toast.info("Waktu Habis!", {
-                        autoClose: 1500,
-                    }); 
+          toast.info("🚩 Waktu habis!", {
+            autoClose: 1500,
+          });
 
-                    // Perbaikan logika skor: score saat ini dibandingkan dengan highScore yang ada
-                    if (score > highScore) {
-                        // Perbaikan typo: "whack_highscre" menjadi "whack_highscore"
-                        localStorage.setItem("whack_highscore", score.toString());
-                        setHighScore(score);
-                        toast.success("New High Score!", {
-                            autoClose: 1500,
-                        });
-                    }
-
-                    return 0;
-                }
-                return prev - 1;
+          if (score > highScore) {
+            localStorage.setItem("whack_highscore", score.toString());
+            setHighScore(score);
+            toast.success("🚩 New High Score!", {
+              autoClose: 1500,
             });
-        }, 1000);
+          }
 
-        return () => clearInterval(countdown);
-    }, [gameActive, score, highScore]);
-
-    const hitMole = (index: number) => {
-        if (index === moleIndex && gameActive) {
-            setScore((prev) => prev + 1);
-            setMoleIndex(null);
+          return 0;
         }
-    };
+        return prev - 1;
+      });
+    }, 1000);
 
-    const startGame = () => {
-        setScore(0);
-        setTime(30);
-        setGameActive(true);
+    return () => clearInterval(countdown);
+  }, [gameActive, score, highScore]);
 
-        toast.info("Waktu dimulai! Kamu punya 30 detik!", {
-            autoClose: 1500, // Diperbaiki dari 15000 agar tidak terlalu lama menutupi layar
-        });
-    };
+  const hitMole = (index: number) => {
+    if (index === moleIndex && gameActive) {
+      setScore((prev) => prev + 1);
+      setMoleIndex(null);
+    }
+  };
 
-    return (
-        <div className="game-container">
-            <div className="game-panel">
-                <h1 className="game-title"> Tap the Mouse</h1>
+  const startGame = () => {
+    setScore(0);
+    setTime(30);
+    setGameActive(true);
 
-                <div className="game-stats">
-                    <div className="score"> Score: {score}</div>
-                    <div className="timer"> Timer: {time}</div>
-                </div>
+    toast.info("⏱ Waktu dimulai! Kamu punya 30 detik!", {
+      autoClose: 1500,
+    });
+  };
 
-                <div className="highscore">
-                    High Score: {highScore}
-                </div>
+  return (
+    <div className="game-container">
+      <div className="game-panel">
+        <h1 className="game-title">🐭 Tap the Mouse</h1>
 
-                {!gameActive && (
-                    <button className="start-btn" onClick={startGame}>
-                        Start Game
-                    </button>
-                )}
-            </div>
-
-            <div className="game-grid">
-                {holes.map((_, index) => (
-                    <div
-                        key={index}
-                        onClick={() => hitMole(index)}
-                        className="hole"
-                    >
-                        {/* Perbaikan: MoleIndex (huruf besar M) diganti moleIndex (huruf kecil m) */}
-                        {moleIndex === index && (
-                            <div className="mole">🐭</div>
-                        )}
-                    </div>
-                ))}
-            </div>
-
-            <ToastContainer
-                position="top-center"
-                autoClose={1500}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-            />
+        <div className="game-stats">
+          <div className="score">🏆 Score: {score}</div>
+          <div className="timer">⏱ Time: {time}</div>
         </div>
-    );
+
+        <div className="highscore">⭐ High Score: {highScore}</div>
+
+        {!gameActive && (
+          <button className="start-btn" onClick={startGame}>
+            🚀 Start Game
+          </button>
+        )}
+      </div>
+
+      <div className="game-grid">
+        {holes.map((_, index) => (
+          <div key={index} onClick={() => hitMole(index)} className="hole">
+            {moleIndex === index && <div className="mole">🐹</div>}
+          </div>
+        ))}
+      </div>
+
+      <ToastContainer
+        position="top-center"
+        autoClose={1500}
+        closeOnClick
+        pauseOnHover
+        draggable
+        closeButton
+      />
+    </div>
+  );
 }
